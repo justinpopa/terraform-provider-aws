@@ -286,6 +286,43 @@ func ec2DescribeTransitGatewayVpcAttachment(conn *ec2.EC2, transitGatewayAttachm
 	return nil, nil
 }
 
+func ec2DescribeTransitGatewayConnect(conn *ec2.EC2, transitGatewayAttachmentID string) (*ec2.TransitGatewayConnect, error) {
+	input := &ec2.DescribeTransitGatewayConnectsInput{
+		TransitGatewayAttachmentIds: []*string{aws.String(transitGatewayAttachmentID)},
+	}
+
+	log.Printf("[DEBUG] Reading EC2 Transit Gateway VPC Attachment (%s): %s", transitGatewayAttachmentID, input)
+	for {
+		output, err := conn.DescribeTransitGatewayConnects(input)
+
+		if err != nil {
+			return nil, err
+		}
+
+		if output == nil || len(output.TransitGatewayConnects) == 0 {
+			return nil, nil
+		}
+
+		for _, transitGatewayConnect := range output.TransitGatewayConnects {
+			if transitGatewayConnect == nil {
+				continue
+			}
+
+			if aws.StringValue(transitGatewayConnect.TransitGatewayAttachmentId) == transitGatewayAttachmentID {
+				return transitGatewayConnect, nil
+			}
+		}
+
+		if aws.StringValue(output.NextToken) == "" {
+			break
+		}
+
+		input.NextToken = output.NextToken
+	}
+
+	return nil, nil
+}
+
 func ec2TransitGatewayRouteTableAssociationUpdate(conn *ec2.EC2, transitGatewayRouteTableID, transitGatewayAttachmentID string, associate bool) error {
 	transitGatewayAssociation, err := ec2DescribeTransitGatewayRouteTableAssociation(conn, transitGatewayRouteTableID, transitGatewayAttachmentID)
 	if err != nil {

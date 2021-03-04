@@ -627,6 +627,7 @@ func Provider() *schema.Provider {
 			"aws_ec2_traffic_mirror_target":                           resourceAwsEc2TrafficMirrorTarget(),
 			"aws_ec2_traffic_mirror_session":                          resourceAwsEc2TrafficMirrorSession(),
 			"aws_ec2_transit_gateway":                                 resourceAwsEc2TransitGateway(),
+			"aws_ec2_transit_gateway_connect":                         resourceAwsEc2TransitGatewayConnect(),
 			"aws_ec2_transit_gateway_peering_attachment":              resourceAwsEc2TransitGatewayPeeringAttachment(),
 			"aws_ec2_transit_gateway_peering_attachment_accepter":     resourceAwsEc2TransitGatewayPeeringAttachmentAccepter(),
 			"aws_ec2_transit_gateway_prefix_list_reference":           resourceAwsEc2TransitGatewayPrefixListReference(),
